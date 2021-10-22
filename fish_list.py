@@ -10,20 +10,27 @@ G = '\33[92m'
 N = '\033[0m'
 
 
-def get_fish_list():
-    """Return a dict containing all the fish available in-game and their data.
+def get_critter_list(critter_type: str):
+    """Return a dict containing all the critter available in-game and their data.
 
-    The list is extracted from the file .fish_soup.
+    The list is extracted from the file .[critter_type]_soup.
+    If the soup file doesn't already exist, it's created.
     """
-    if os.path.exists('.fish_soup') is False:
-        print("Something went wrong... Couldn't find the fish soup")
-        exit()
-    all_fish = pickle.load(open('.fish_soup', 'rb'))
-    return all_fish
+    if critter_type == 'fish':
+        if os.path.exists('.fish_soup') is False:
+            print('Making fish soup...')
+            os.system('python3 .fish_soup.py')
+        all_critter = pickle.load(open('.fish_soup', 'rb'))
+    elif critter_type == 'bug':
+        if os.path.exists('.bug_soup') is False:
+            print('Making bug soup...')
+            os.system('python3 .bug_soup.py')
+        all_critter = pickle.load(open('.bug_soup', 'rb'))
+    return all_critter
 
 
-def setup_fish_collection(all_fish: dict):
-    """Return a dict containing all the fish caught by user and their data.
+def setup_critter_collection(all_fish: dict):
+    """Return a dict containing all the critter caught by user and their data.
 
     Check the existence of the collection file which contains the list of
     fish caught so far:
@@ -141,9 +148,8 @@ def print_tab(available_fish: dict, caught_fish: dict):
 
 
 def main():
-    all_fish = get_fish_list()
-    caught_fish = setup_fish_collection(all_fish)
-    print(caught_fish)
+    all_fish = get_critter_list('fish')
+    caught_fish = setup_critter_collection(all_fish)
     available_fish = get_available_fish_list(all_fish, caught_fish)
     print_tab(available_fish, caught_fish)
 
